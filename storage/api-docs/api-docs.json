@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Luvinco",
+        "description": "Documentação da API da vitrine de produtos",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Listar produtos",
+                "operationId": "24c51a4469fbe1d6ef9c4d258e31bbf3",
+                "responses": {
+                    "200": {
+                        "description": "Lista de produtos retornada com sucesso"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Produtos",
+            "description": "Produtos"
+        }
+    ]
+}
