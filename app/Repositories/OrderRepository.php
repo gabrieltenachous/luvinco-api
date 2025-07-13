@@ -6,12 +6,13 @@ use App\Models\Order;
 
 class OrderRepository
 {
-    public function getOpenBySession(string $sessionId): ?Order
+    public function getLatestOpen(): ?Order
     {
-        return Order::where('session_id', $sessionId)
-            ->where('status', 'aberto')
+        return Order::where('status', 'aberto')
+            ->latest()
             ->first();
     }
+
 
     public function create(array $data): Order
     {

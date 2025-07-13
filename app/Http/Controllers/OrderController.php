@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Http\Request;
 use App\Services\OrderService;
 
@@ -9,12 +10,20 @@ class OrderController extends Controller
 {
     public function __construct(private OrderService $service) {}
 
-    public function index(Request $request)
+    public function index()
     {
-        $sessionId = $request->session()->getId();
+        $order = $this->service->getLatestOpen();
 
-        $order = $this->service->getOrCreateOpenOrder($sessionId);
+        if (!$order) {
+            return $this->success(null, 'Nenhum pedido em aberto encontrado.');
+        }
 
-        return $this->success($order, 'Pedido atual carregado com sucesso.');
+        return $this->success($order, 'Pedido em aberto carregado com sucesso.');
+    }
+
+    public function store(StoreOrderRequest $request)
+    {
+        $order = $this->service->createWithItems($request->validated()['items']);
+        return $this->success($order, 'Itens adicionados ao carrinho com sucesso.');
     }
 }

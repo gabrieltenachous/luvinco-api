@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('session_id'); // ID da sessão para identificar o carrinho
+            $table->uuid('id')->primary();
             $table->enum('status', ['aberto', 'finalizado'])->default('aberto');
             $table->timestamps();
         });
