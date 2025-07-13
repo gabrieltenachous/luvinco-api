@@ -17,6 +17,6 @@ class ProductRepository
             ->when($filters['name'] ?? null, fn($q, $v) => $q->where('name', 'like', "%{$v}%"))
             ->when($filters['brand'] ?? null, fn($q, $v) => $q->where('brand', $v))
             ->when($filters['category'] ?? null, fn($q, $v) => $q->where('category', $v))
-            ->paginate(10);
+            ->paginate(2);
     }
 }
