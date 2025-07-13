@@ -12,9 +12,7 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            ProductSeeder::class,
-        ]);
+        \App\Models\Product::factory()->count(20)->create();
     }
 
 }
