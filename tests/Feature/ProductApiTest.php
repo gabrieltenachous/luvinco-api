@@ -16,7 +16,9 @@ class ProductApiTest extends TestCase
     {
         Product::factory()->count(15)->create();
 
-        $response = $this->getJson('/api/products'); 
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->getJson('/api/products'); 
         $response->assertOk()
             ->assertJsonStructure([
                 'message',
@@ -32,7 +34,9 @@ class ProductApiTest extends TestCase
         Product::factory()->create(['name' => 'Tênis Masculino Adidas']);
         Product::factory()->create(['name' => 'Relógio Apple']);
 
-        $response = $this->getJson('/api/products?name=T%C3%AAnis');
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->getJson('/api/products?name=T%C3%AAnis');
 
         $response->assertOk();
         $this->assertCount(1, $response['data']);
@@ -54,7 +58,9 @@ class ProductApiTest extends TestCase
             'category' => 'Celulares',
         ]);
 
-        $response = $this->getJson('/api/products?brand=Apple&category=Eletrônicos');
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->getJson('/api/products?brand=Apple&category=Eletrônicos');
 
         $response->assertOk();
         $this->assertCount(1, $response['data']);

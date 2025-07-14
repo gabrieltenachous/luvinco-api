@@ -17,7 +17,9 @@ class OrderApiTest extends TestCase
     {
         $product = Product::factory()->create(['stock' => 10]);
 
-        $response = $this->postJson('/api/orders', [
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->postJson('/api/orders', [
             'items' => [
                 ['product_id' => $product->product_id, 'quantity' => 2],
             ]
@@ -37,7 +39,9 @@ class OrderApiTest extends TestCase
     {
         $product = Product::factory()->create(['stock' => 1]);
 
-        $response = $this->postJson('/api/orders', [
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->postJson('/api/orders', [
             'items' => [
                 ['product_id' => $product->product_id, 'quantity' => 5],
             ]
@@ -51,9 +55,10 @@ class OrderApiTest extends TestCase
     public function should_list_latest_open_order()
     {
         $product = Product::factory()->create(['stock' => 3]);
-
-        // Criar carrinho antes
-        $this->postJson('/api/orders', [
+ 
+        $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->postJson('/api/orders', [
             'items' => [
                 ['product_id' => $product->product_id, 'quantity' => 2],
             ]

@@ -12,6 +12,7 @@ class ProductController extends Controller
     /**
      * @OA\Get(
      *     path="/api/products",
+     *     security={{"apiToken":{}}},
      *     summary="Listar produtos com filtros",
      *     tags={"Produtos"},
      *     @OA\Parameter(name="name", in="query", description="Filtrar por nome", @OA\Schema(type="string")),

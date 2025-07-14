@@ -26,7 +26,12 @@
                     "404": {
                         "description": "Nenhum pedido em aberto encontrado"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -76,7 +81,12 @@
                     "422": {
                         "description": "Erro de validação"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             }
         },
         "/api/orders/completed": {
@@ -90,7 +100,12 @@
                     "200": {
                         "description": "Pedidos concluídos carregados com sucesso"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             }
         },
         "/api/order-products": {
@@ -138,7 +153,12 @@
                     "400": {
                         "description": "Parâmetro obrigatório 'order_id' não enviado"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -196,7 +216,12 @@
                     "500": {
                         "description": "Erro ao integrar com o sistema externo"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             }
         },
         "/api/products": {
@@ -236,7 +261,12 @@
                     "200": {
                         "description": "Lista de produtos"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "apiToken": []
+                    }
+                ]
             }
         }
     },
@@ -312,6 +342,13 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "apiToken": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
             }
         }
     },

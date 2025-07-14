@@ -43,6 +43,7 @@ class OrderProductController extends Controller
     /**
      * @OA\Get(
      *     path="/api/order-products",
+     *     security={{"apiToken":{}}},
      *     summary="Listar produtos de um pedido",
      *     tags={"OrderProducts"},
      *     @OA\Parameter(
@@ -86,6 +87,7 @@ class OrderProductController extends Controller
     /**
      * @OA\Post(
      *     path="/api/order-products",
+     *     security={{"apiToken":{}}},
      *     summary="Finalizar pedido",
      *     tags={"OrderProducts"},
      *     @OA\RequestBody(

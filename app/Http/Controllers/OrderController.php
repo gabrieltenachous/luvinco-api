@@ -12,6 +12,7 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orders",
+     *     security={{"apiToken":{}}},
      *     summary="Obter pedido em aberto",
      *     tags={"Pedidos"},
      *     @OA\Response(
@@ -37,6 +38,7 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orders/completed",
+     *     security={{"apiToken":{}}},
      *     summary="Listar pedidos finalizados",
      *     tags={"Pedidos"},
      *     @OA\Response(
@@ -53,6 +55,7 @@ class OrderController extends Controller
      /**
      * @OA\Post(
      *     path="/api/orders",
+     *     security={{"apiToken":{}}},
      *     summary="Adicionar itens ao carrinho",
      *     tags={"Pedidos"},
      *     @OA\RequestBody(

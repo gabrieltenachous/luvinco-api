@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use App\ApiResponder;
 
 /**
+ * @OA\SecurityScheme(
+ *   securityScheme="apiToken",
+ *   type="apiKey",
+ *   in="header",
+ *   name="Authorization"
+ * )
  * @OA\Info(
  *     title="LuvinCo API",
  *     version="1.0.0",

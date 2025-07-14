@@ -36,7 +36,9 @@ class OrderProductApiTest extends TestCase
         ]);
 
         // Act
-        $response = $this->postJson(
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->postJson(
             '/api/order-products',
             ['order_id' => $order->id]
         );
@@ -74,7 +76,9 @@ class OrderProductApiTest extends TestCase
                 Http::response(['message' => 'Erro externo.'], 400),
         ]);
 
-        $response = $this->postJson(
+        $response = $this->withHeaders([
+            'Authorization' => env('API_CUSTOM_TOKEN')
+        ])->postJson(
             '/api/order-products',
             ['order_id' => $order->id]
         );
