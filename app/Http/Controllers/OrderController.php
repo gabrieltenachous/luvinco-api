@@ -15,7 +15,7 @@ class OrderController extends Controller
         $order = $this->service->getLatestOpen();
 
         if (!$order) {
-            return $this->success(null, 'Nenhum pedido em aberto encontrado.');
+            return $this->error('Nenhum pedido em aberto encontrado.');
         }
 
         return $this->success($order, 'Pedido em aberto carregado com sucesso.');

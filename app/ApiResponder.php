@@ -34,4 +34,12 @@ trait ApiResponder
             'data' => $data,
         ], $status);
     }
+
+    public function error(string $message, int $status = 400): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+        ], $status);
+    }
+
 }
