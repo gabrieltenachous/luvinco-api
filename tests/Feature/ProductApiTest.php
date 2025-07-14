@@ -5,12 +5,13 @@ namespace Tests\Feature;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ProductApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function should_return_paginated_products_structure()
     {
         Product::factory()->count(15)->create();
@@ -25,7 +26,7 @@ class ProductApiTest extends TestCase
             ]);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function should_filter_products_by_name()
     {
         Product::factory()->create(['name' => 'Tênis Masculino Adidas']);
@@ -38,7 +39,7 @@ class ProductApiTest extends TestCase
         $this->assertEquals('Tênis Masculino Adidas', $response['data'][0]['name']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function should_filter_by_brand_and_category()
     {
         Product::factory()->create([
