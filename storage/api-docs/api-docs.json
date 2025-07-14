@@ -93,6 +93,112 @@
                 }
             }
         },
+        "/api/order-products": {
+            "get": {
+                "tags": [
+                    "OrderProducts"
+                ],
+                "summary": "Listar produtos de um pedido",
+                "operationId": "596ebb0165a74a726e3de1cabd35c927",
+                "parameters": [
+                    {
+                        "name": "order_id",
+                        "in": "query",
+                        "description": "ID do pedido",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Itens do pedido retornados com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Itens do pedido retornados com sucesso."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OrderProduct"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parâmetro obrigatório 'order_id' não enviado"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "OrderProducts"
+                ],
+                "summary": "Finalizar pedido",
+                "operationId": "57da2a13e6750c3c7a22fb2f90766941",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order_id"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "type": "string",
+                                        "format": "uuid",
+                                        "example": "019809f8-61c1-7252-853b-58c0432fce2a"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pedido finalizado com sucesso.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Pedido criado com sucesso."
+                                        },
+                                        "entrega": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "pedido": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OrderProduct"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao integrar com o sistema externo"
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -134,10 +240,89 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "OrderProduct": {
+                "title": "OrderProduct",
+                "required": [
+                    "id",
+                    "order_id",
+                    "product_id",
+                    "quantity",
+                    "unit_price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "0198085b-4e0a-722f-b133-72d55353fae7"
+                    },
+                    "order_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "01980829-cf70-7283-a16d-2c8374852322"
+                    },
+                    "product_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "019805f9-0e50-7293-974e-410641e1ff7a"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "unit_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 79.99
+                    },
+                    "product": {
+                        "properties": {
+                            "product_id": {
+                                "type": "string",
+                                "example": "12345"
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Camisa Social Masculina"
+                            },
+                            "price": {
+                                "type": "number",
+                                "example": 79.99
+                            },
+                            "category": {
+                                "type": "string",
+                                "example": "Roupas Masculinas"
+                            },
+                            "brand": {
+                                "type": "string",
+                                "example": "Zara"
+                            },
+                            "stock": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "image_url": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://placehold.co/600x600?text=Camisa+Social+Masculina"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "tags": [
         {
             "name": "Pedidos",
             "description": "Pedidos"
+        },
+        {
+            "name": "OrderProducts",
+            "description": "OrderProducts"
         },
         {
             "name": "Produtos",

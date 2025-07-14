@@ -34,7 +34,8 @@ return [
     | Supported: "session"
     |
     */
-
+    'custom_token' => env('API_CUSTOM_TOKEN', 'seu_token_seguro'),
+    
     'guards' => [
         'web' => [
             'driver' => 'session',
