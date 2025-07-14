@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Illuminate\Support\Collection;
 
 class OrderRepository
 {
@@ -12,6 +13,13 @@ class OrderRepository
             ->with('orderProducts.product')
             ->latest()
             ->first();
+    }
+    public function getCompleted(): Collection
+    {
+        return Order::with(['orderProducts.product'])
+            ->where('status', 'finalizado')
+            ->latest()
+            ->get();
     }
 
 
@@ -29,5 +37,5 @@ class OrderRepository
     {
         $order->orderProducts()->delete();
     }
-
+    
 }

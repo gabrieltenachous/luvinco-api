@@ -10,7 +10,7 @@ class OrderProductController extends Controller
 {
     public function __construct(private OrderProductService $service) {}
 
-    public function index(Request $request)
+    public function listByOrder(Request $request)
     {
         $orderId = $request->query('order_id');
         if (!$orderId) {

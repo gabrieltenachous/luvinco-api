@@ -10,7 +10,7 @@ class OrderController extends Controller
 {
     public function __construct(private OrderService $service) {}
 
-    public function index()
+    public function getOpenOrder()
     {
         $order = $this->service->getLatestOpen();
 
@@ -20,7 +20,11 @@ class OrderController extends Controller
 
         return $this->success($order, 'Pedido em aberto carregado com sucesso.');
     }
-
+    public function listCompletedOrders()
+    {
+        $orders = $this->service->listCompleted();
+        return $this->success($orders, 'Pedidos concluídos carregados com sucesso.');
+    }
     public function store(StoreOrderRequest $request)
     {
         $data = $request->validated();

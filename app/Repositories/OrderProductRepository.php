@@ -20,6 +20,13 @@ class OrderProductRepository
         return OrderProduct::where('order_id', $orderId)
             ->where('product_id', $productId)
             ->first();
+    } 
+    public function getCompletedOrders(): \Illuminate\Database\Eloquent\Collection
+    {
+        return \App\Models\OrderProduct::with('product', 'order')
+            ->whereHas('order', fn($q) => $q->where('status', 'finalizado'))
+            ->latest()
+            ->get();
     }
 
 }

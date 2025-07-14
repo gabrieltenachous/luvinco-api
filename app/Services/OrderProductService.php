@@ -19,7 +19,12 @@ class OrderProductService
             $this->repository->getByOrder($orderId)
         );
     }
-    
+    public function listCompletedOrders(): AnonymousResourceCollection
+    {
+        return OrderProductResource::collection(
+            $this->repository->getCompletedOrders()
+        );
+    }
     public function finalizeOrder(string $orderId): array
     {
         $order = Order::where('id', $orderId)

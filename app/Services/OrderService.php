@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\OrderRepository;
-use App\Http\Resources\OrderResource; 
+use App\Http\Resources\OrderResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderService
 {
@@ -32,5 +33,11 @@ class OrderService
         }
 
         return new OrderResource($order);
+    }
+    public function listCompleted(): AnonymousResourceCollection
+    {
+        return OrderResource::collection(
+            $this->repository->getCompleted()
+        );
     }
 }
