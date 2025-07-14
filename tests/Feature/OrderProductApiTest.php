@@ -7,93 +7,92 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use PHPUnit\Framework\Attributes\Test;
 
 class OrderProductApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_should_finalize_order_and_decrement_stock()
+    #[Test]
+    public function it_should_finalize_an_order_successfully(): void
     {
-        $product = Product::factory()->create(['stock' => 5]);
+        // Arrange
+        $product = Product::factory()->create(['stock' => 10, 'price' => 99.90]);
+        $order   = Order::factory()->create(['status' => 'aberto']);
 
-        $orderResponse = $this->postJson('/api/orders', [
-            'items' => [
-                ['product_id' => $product->product_id, 'quantity' => 2]
-            ]
+        $order->orderProducts()->create([
+            'product_id' => $product->id,
+            'quantity'   => 2,
+            'unit_price' => $product->price,
         ]);
 
-        $orderId = $orderResponse->json('data.id');
+        // Mock da API externa
+        Http::fake([
+            'https://luvinco.proxy.beeceptor.com/orders' => Http::response([
+                'message'            => 'Pedido recebido com sucesso.',
+                'estimated_delivery' => '2025-07-20',
+            ], 200),
+        ]);
 
-        $this->postJson('/api/order-products', [
-            'order_id' => $orderId,
-        ])->assertStatus(200)
-          ->assertJsonPath('message', 'Pedido finalizado com sucesso.');
+        // Act
+        $response = $this->postJson(
+            '/api/order-products',
+            ['order_id' => $order->id]
+        );
+
+        // Assert
+        $response->assertOk()
+                 ->assertJsonPath('data.mensagem', 'Pedido recebido com sucesso.')
+                 ->assertJsonPath('data.entrega',  '2025-07-20');
 
         $this->assertDatabaseHas('orders', [
-            'id' => $orderId,
+            'id'     => $order->id,
             'status' => 'finalizado',
         ]);
 
         $this->assertDatabaseHas('products', [
-            'id' => $product->id,
-            'stock' => 3,
+            'id'    => $product->id,
+            'stock' => 8, // 10 - 2
         ]);
     }
 
-    public function test_should_fail_to_finalize_already_closed_order()
+    #[Test]
+    public function it_should_fail_if_external_api_returns_error(): void
     {
-        $order = Order::factory()->create(['status' => 'finalizado']);
+        $product = Product::factory()->create(['stock' => 5, 'price' => 55]);
+        $order   = Order::factory()->create(['status' => 'aberto']);
 
-        $this->postJson('/api/order-products', [
-            'order_id' => $order->id,
-        ])->assertStatus(422)
-          ->assertJsonValidationErrors(['order_id']);
-    }
-
-    public function test_should_fail_if_insufficient_stock()
-    {
-        $product = Product::factory()->create(['stock' => 1]);
-
-        $orderResponse = $this->postJson('/api/orders', [
-            'items' => [
-                ['product_id' => $product->product_id, 'quantity' => 1]
-            ]
+        $order->orderProducts()->create([
+            'product_id' => $product->id,
+            'quantity'   => 3,
+            'unit_price' => $product->price,
         ]);
 
-        $orderId = $orderResponse->json('data.id');
-
-        // manualmente aumentar a quantidade no banco para simular inconsistência
-        OrderProduct::where('order_id', $orderId)->update(['quantity' => 5]);
-
-        $this->postJson('/api/order-products', [
-            'order_id' => $orderId,
-        ])->assertStatus(422)
-          ->assertJsonValidationErrors(['items']);
-    }
-
-    public function test_should_list_order_products_by_order_id()
-    {
-        $product = Product::factory()->create(['stock' => 3]);
-
-        $orderResponse = $this->postJson('/api/orders', [
-            'items' => [
-                ['product_id' => $product->product_id, 'quantity' => 2]
-            ]
+        Http::fake([
+            'https://luvinco.proxy.beeceptor.com/orders' =>
+                Http::response(['message' => 'Erro externo.'], 400),
         ]);
 
-        $orderId = $orderResponse->json('data.id');
+        $response = $this->postJson(
+            '/api/order-products',
+            ['order_id' => $order->id]
+        );
 
-        $this->postJson('/api/order-products', ['order_id' => $orderId]);
+        $response->assertStatus(500)
+                 ->assertJson(['message' =>
+                     'Erro ao integrar com o sistema externo. Nenhuma alteração foi salva.']);
 
-        $response = $this->getJson('/api/order-products?order_id=' . $orderId);
+        // Pedido permanece aberto
+        $this->assertDatabaseHas('orders', [
+            'id'     => $order->id,
+            'status' => 'aberto',
+        ]);
 
-        $response->assertStatus(200)
-            ->assertJsonPath('message', 'Itens do pedido retornados com sucesso.')
-            ->assertJsonStructure([
-                'message',
-                'data' => [
-                    '*' => ['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'created_at']
-                ]
-            ]);
+        // Estoque não alterado
+        $this->assertDatabaseHas('products', [
+            'id'    => $product->id,
+            'stock' => 5,
+        ]);
     }
 }

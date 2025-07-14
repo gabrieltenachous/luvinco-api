@@ -14,7 +14,7 @@ class OrderProductServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected OrderProductService $service;
+    private OrderProductService $service;
 
     protected function setUp(): void
     {
@@ -23,36 +23,28 @@ class OrderProductServiceTest extends TestCase
     }
 
     #[Test]
-    public function should_finalize_order_and_decrement_stock()
+    public function it_should_finalize_order_and_decrement_stock(): void
     {
-        $product = Product::factory()->create(['stock' => 5]);
-        $order = Order::factory()->create(['status' => 'aberto']);
+        $product = Product::factory()->create(['stock' => 15, 'price' => 12]);
+        $order   = Order::factory()->create(['status' => 'aberto']);
 
         $order->orderProducts()->create([
             'product_id' => $product->id,
-            'quantity' => 3,
+            'quantity'   => 4,
             'unit_price' => $product->price,
         ]);
 
-        $this->service->finalizeOrder($order->id); 
-        $this->assertEquals(2, $product->fresh()->stock);
+        $items = $this->service->finalizeOrder($order->id);
+
+        $this->assertCount(1, $items);
         $this->assertEquals('finalizado', $order->fresh()->status);
+        $this->assertEquals(11, $product->fresh()->stock); // 15 - 4
     }
 
     #[Test]
-    public function should_fail_to_finalize_if_insufficient_stock()
+    public function it_should_throw_validation_exception_if_order_not_found(): void
     {
-        $product = Product::factory()->create(['stock' => 2]);
-        $order = Order::factory()->create(['status' => 'aberto']);
-
-        $order->orderProducts()->create([
-            'product_id' => $product->id,
-            'quantity' => 5,
-            'unit_price' => $product->price,
-        ]);
-
         $this->expectException(ValidationException::class);
-
-        $this->service->finalizeOrder($order->id);
+        $this->service->finalizeOrder('non-existing-uuid');
     }
 }

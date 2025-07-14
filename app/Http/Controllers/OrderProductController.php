@@ -27,11 +27,8 @@ class OrderProductController extends Controller
     public function store(StoreOrderProductRequest $request)
     {
         try {
-            $response = DB::transaction(function () use ($request) {
-                // Finaliza o pedido (atualiza status e desconta estoque)
+            $response = DB::transaction(function () use ($request) { 
                 $items = $this->service->finalizeOrder($request->order_id);
-
-                // Envia para o endpoint externo (somente product_id e quantity)
                 $res =  Http::withHeaders([
                     'Authorization' => 'wQ8ehU2x4gj93CH9lMTnelQO3GcFvLzyqn8Fj3WA0ffQy57I60',
                 ])->post('https://luvinco.proxy.beeceptor.com/orders', [
@@ -45,7 +42,6 @@ class OrderProductController extends Controller
                 if ($res->status() !== 200) {
                     throw new \Exception($res->json()['message'] ?? 'Erro ao integrar pedido externo.');
                 }
-
                 return [
                     'beeceptor' => $res->json(),
                     'items' => $items,
