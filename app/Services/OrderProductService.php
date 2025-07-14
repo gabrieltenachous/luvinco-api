@@ -34,7 +34,7 @@ class OrderProductService
 
         if (!$order) {
             throw ValidationException::withMessages([
-                'order_id' => ['Invalid or already closed order.']
+                'order_id' => ['Carrinho não encontrado ou já finalizado.']
             ]);
         }
 

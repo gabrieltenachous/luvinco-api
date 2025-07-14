@@ -17,5 +17,14 @@ class StoreOrderProductRequest extends FormRequest
     {
         return true;
     }
+    
+    public function messages(): array
+    {
+        return [
+            'order_id.required' => 'O campo "order_id" é obrigatório.',
+            'order_id.uuid' => 'O campo "order_id" deve ser um UUID válido.',
+            'order_id.exists' => 'O pedido informado não foi encontrado.',
+        ];
+    }
 
 }

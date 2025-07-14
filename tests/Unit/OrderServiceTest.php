@@ -26,12 +26,13 @@ class OrderServiceTest extends TestCase
     {
         $product = Product::factory()->create(['stock' => 5]);
 
-        $response = $this->service->createWithItems([
-            ['product_id' => $product->product_id, 'quantity' => 2]
+        $order = $this->service->createWithItems([
+            ['product_id' => $product->product_id, 'quantity' => 2],
         ]);
 
-        $this->assertEquals('aberto', $response->status);
+        $this->assertEquals('aberto', $order->status);
     }
+
 
     #[Test]
     public function should_fail_if_product_does_not_exist(): void
