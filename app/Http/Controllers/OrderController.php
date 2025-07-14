@@ -23,7 +23,12 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        $order = $this->service->createWithItems($request->validated()['items']);
+        $data = $request->validated();
+        $order = $this->service->createWithItems(
+            $data['items'] ?? [],  
+            $data['clear'] ?? false
+        );
         return $this->success($order, 'Itens adicionados ao carrinho com sucesso.');
     }
+
 }

@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Repositories\OrderRepository;
-use App\Http\Resources\OrderResource;
-use App\Models\Product; 
-use Illuminate\Validation\ValidationException;
+use App\Http\Resources\OrderResource; 
 
 class OrderService
 {
-    public function __construct(private OrderRepository $repository) {}
+    public function __construct(
+        private OrderRepository $repository,
+        private OrderProductService $orderProductService,
+    ) {}
 
     public function getLatestOpen(): ?OrderResource
     {
@@ -17,20 +18,17 @@ class OrderService
 
         return $order ? new OrderResource($order) : null;
     }
-    public function createWithItems(array $items): OrderResource
-    { 
-        $order = $this->repository->create(['status' => 'aberto']);
+    public function createWithItems(array $items, bool $clearCart = false): OrderResource
+    {
+        $order = $this->repository->getLatestOpen()
+            ?? $this->repository->create(['status' => 'aberto']);
 
-        foreach ($items as $item) {
-            $product = Product::where('product_id', $item['product_id'])->first();
+        if ($clearCart) {
+            $this->repository->clearItems($order);
+        }
 
-            if (!$product || $product->stock < $item['quantity']) {
-                throw ValidationException::withMessages([
-                    'items' => ["Produto '{$product?->name}' sem estoque suficiente."]
-                ]);
-            }
-
-            // Aqui, salvar relação virá no commit 12 (OrderProduct)
+        if (!empty($items)) {
+            $this->orderProductService->addOrUpdateItems($order, $items);
         }
 
         return new OrderResource($order);

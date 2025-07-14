@@ -14,5 +14,11 @@ class Order extends Model
     
     protected $fillable = [ 
         'status',
-    ];
+    ]; 
+    
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
 }

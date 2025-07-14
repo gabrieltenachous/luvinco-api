@@ -9,6 +9,7 @@ class OrderRepository
     public function getLatestOpen(): ?Order
     {
         return Order::where('status', 'aberto')
+            ->with('orderProducts.product')
             ->latest()
             ->first();
     }
@@ -24,4 +25,9 @@ class OrderRepository
         $order->update($data);
         return $order;
     }
+    public function clearItems(Order $order): void
+    {
+        $order->orderProducts()->delete();
+    }
+
 }
