@@ -18,7 +18,7 @@ class OrderService
         return $order ? new OrderResource($order) : null;
     }
     public function createWithItems(array $items): OrderResource
-    {
+    { 
         $order = $this->repository->create(['status' => 'aberto']);
 
         foreach ($items as $item) {

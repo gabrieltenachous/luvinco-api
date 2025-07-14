@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -17,7 +18,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'product_id' => strtoupper(fake()->unique()->bothify('?????-#####')),
+            'product_id' =>  (string) Str::uuid(),
             'name' => fake()->words(3, true),
             'description' => fake()->sentence(8),
             'price' => fake()->randomFloat(2, 10, 1000),
