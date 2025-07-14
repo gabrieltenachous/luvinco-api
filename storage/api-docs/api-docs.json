@@ -1,27 +1,144 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API Luvinco",
-        "description": "Documentação da API da vitrine de produtos",
-        "version": "1.0"
+        "title": "LuvinCo API",
+        "description": "Documentação da API da loja virtual LuvinCo.",
+        "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Servidor local"
+        }
+    ],
     "paths": {
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Obter pedido em aberto",
+                "operationId": "6ef09dabfe92c5d409a28025e57c55be",
+                "responses": {
+                    "200": {
+                        "description": "Pedido em aberto carregado com sucesso"
+                    },
+                    "404": {
+                        "description": "Nenhum pedido em aberto encontrado"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Adicionar itens ao carrinho",
+                "operationId": "d690d6834318e9b064df441e854de8b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "items"
+                                ],
+                                "properties": {
+                                    "clear": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "string",
+                                                    "example": "12345"
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Itens adicionados ao carrinho com sucesso"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        },
+        "/api/orders/completed": {
+            "get": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Listar pedidos finalizados",
+                "operationId": "0e3c0daedf41c175cb00c518fcb6383f",
+                "responses": {
+                    "200": {
+                        "description": "Pedidos concluídos carregados com sucesso"
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
                     "Produtos"
                 ],
-                "summary": "Listar produtos",
-                "operationId": "24c51a4469fbe1d6ef9c4d258e31bbf3",
+                "summary": "Listar produtos com filtros",
+                "operationId": "1bfaa78d1c2c3848ab8165c5dadcad3e",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtrar por nome",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "brand",
+                        "in": "query",
+                        "description": "Filtrar por marca",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filtrar por categoria",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de produtos retornada com sucesso"
+                        "description": "Lista de produtos"
                     }
                 }
             }
         }
     },
     "tags": [
+        {
+            "name": "Pedidos",
+            "description": "Pedidos"
+        },
         {
             "name": "Produtos",
             "description": "Produtos"

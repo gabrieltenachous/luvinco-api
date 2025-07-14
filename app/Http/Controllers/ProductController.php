@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\ApiResponder;
-use App\Http\Resources\StandardResource;
+ 
 use Illuminate\Http\Request;
 use App\Services\ProductService;
 
