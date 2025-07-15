@@ -119,9 +119,8 @@ class OrderProductController extends Controller
     public function store(StoreOrderProductRequest $request)
     {
         try {
-            $response = DB::transaction(function () use ($request) {
+            $response = DB::transaction(function () use ($request) { 
                 $items = $this->service->finalizeOrder($request->order_id);
-
                 $res = $this->gateway->send($items);
 
                 if ($res->status() !== 200) {
