@@ -222,5 +222,3 @@ docs: documentar endpoints da API com exemplos de payload e headers
 ```
 
 ---
-
-Se quiser, posso gerar esse conteúdo automaticamente no seu `README.md` com Markdown já formatado. Deseja que eu salve isso como arquivo também?
