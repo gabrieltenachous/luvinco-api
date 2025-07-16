@@ -12,7 +12,7 @@ class StoreOrderRequest extends FormRequest
             'clear' => 'sometimes|boolean',
             'items' => 'required_unless:clear,true|array',
             'items.*.product_id' => 'required|string|exists:products,product_id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|integer|min:-1',
         ];
     }
 
@@ -32,7 +32,7 @@ class StoreOrderRequest extends FormRequest
             'items.*.product_id.exists' => 'O produto informado não foi encontrado.',
             'items.*.quantity.required' => 'O campo "quantity" de cada item é obrigatório.',
             'items.*.quantity.integer' => 'O campo "quantity" deve ser um número inteiro.',
-            'items.*.quantity.min' => 'A quantidade mínima permitida é 1.',
+            'items.*.quantity.min' => 'A quantidade mínima permitida é -1.',
         ];
     }
 

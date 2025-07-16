@@ -4,15 +4,14 @@ namespace App\Services;
 
 use App\Repositories\OrderProductRepository;
 use App\Http\Resources\OrderProductResource;
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\Product;
+use App\Repositories\OrderRepository;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
 
 class OrderProductService
 {
-    public function __construct(private OrderProductRepository $repository) {}
+    public function __construct(private OrderProductRepository $repository, private OrderRepository $orderRepository, private ProductRepository $productRepository) {}
 
     public function listByOrder(string $orderId): AnonymousResourceCollection
     {
@@ -28,10 +27,7 @@ class OrderProductService
     }
     public function finalizeOrder(string $orderId): array
     {
-        $order = Order::where('id', $orderId)
-            ->where('status', 'aberto')
-            ->with('orderProducts')
-            ->first();
+        $order = $this->orderRepository->findIdStatusOpen($orderId);
         if (!$order) {
             throw ValidationException::withMessages([
                 'order_id' => ['Carrinho não encontrado ou já finalizado.']
@@ -43,12 +39,12 @@ class OrderProductService
         foreach ($order->orderProducts as $pivot) {
             $product = $pivot->product;
 
-            if ($product->stock < $pivot->quantity) { 
+            if ($product->stock < $pivot->quantity) {
                 throw ValidationException::withMessages([
                     'items' => ["Product '{$product->name}' acabou o estoque."]
                 ]);
             }
-            
+
             $product->decrement('stock', $pivot->quantity);
             $result[] = new OrderProductResource($pivot);
         }
@@ -57,10 +53,10 @@ class OrderProductService
     }
 
 
-    public function addOrUpdateItems(Order $order, array $items): void
+    public function addOrUpdateItems(\App\Models\Order $order, array $items): void
     {
         foreach ($items as $item) {
-            $product = Product::where('product_id', $item['product_id'])->firstOrFail();
+            $product = $this->productRepository->findProductId($item['product_id']);
             $quantityToAdd = $item['quantity'];
 
             $existing = $order->orderProducts()
@@ -75,20 +71,11 @@ class OrderProductService
                     'stock' => "Quantidade solicitada para \"{$product->name}\" excede o estoque disponível ({$product->stock})."
                 ]);
             }
-
-            // Atualiza ou cria item do pedido
-            OrderProduct::updateOrCreate(
-                [
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                ],
-                [
-                    'quantity' => $totalRequested,
-                    'unit_price' => $product->price,
-                ]
-            );
+            if ($totalRequested <= 0) {
+                $existing?->delete();
+                continue;
+            } 
+            $this->repository->createOrUpdateItem($order, $product, $totalRequested);
         }
     }
-
-
 }

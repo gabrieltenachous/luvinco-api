@@ -10,7 +10,10 @@ class ProductRepository
     {
         return Product::all();
     }
-
+    public function findProductId(string $id): ?Product
+    {
+        return Product::where('product_id', $id)->firstOrFail();
+    }
     public function filter(array $filters): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         return Product::query()

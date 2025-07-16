@@ -6,7 +6,6 @@ use App\Http\Requests\StoreOrderProductRequest;
 use App\Services\External\OrderGatewayService;
 use Illuminate\Http\Request;
 use App\Services\OrderProductService;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 
 /**

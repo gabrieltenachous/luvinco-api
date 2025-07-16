@@ -14,6 +14,13 @@ class OrderRepository
             ->latest()
             ->first();
     }
+    public function findIdStatusOpen($orderId): ?Order
+    {
+        return Order::where('id', $orderId)
+            ->where('status', 'aberto')
+            ->with('orderProducts')
+            ->first();
+    }
     public function getCompleted(): Collection
     {
         return Order::with(['orderProducts.product'])

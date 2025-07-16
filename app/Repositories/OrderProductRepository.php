@@ -23,10 +23,22 @@ class OrderProductRepository
     } 
     public function getCompletedOrders(): \Illuminate\Database\Eloquent\Collection
     {
-        return \App\Models\OrderProduct::with('product', 'order')
+        return OrderProduct::with('product', 'order')
             ->whereHas('order', fn($q) => $q->where('status', 'finalizado'))
             ->latest()
             ->get();
+    }
+    public function createOrUpdateItem(\App\Models\Order $order, \App\Models\Product $product, int $totalRequested) {
+        OrderProduct::updateOrCreate(
+            [
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+            ],
+            [
+                'quantity' => $totalRequested,
+                'unit_price' => $product->price,
+            ]
+        );
     }
 
 }
