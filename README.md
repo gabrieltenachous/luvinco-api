@@ -1,13 +1,3 @@
-Claro, Bruno. Aqui está um `README.md` completo e direto ao ponto para a **API Laravel da LuvinCo**, com:
-
-* Instruções para rodar com Docker
-* Setup do `.env`
-* Explicação de todos os endpoints REST
-* Header obrigatório com token
-* Exemplos de requisição
-
----
-
 ## 📦 LuvinCo API
 
 API RESTful em Laravel 12 para vitrine de produtos, carrinho de compras e histórico de pedidos.
