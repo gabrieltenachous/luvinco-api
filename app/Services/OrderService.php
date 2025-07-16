@@ -37,7 +37,7 @@ class OrderService
     public function listCompleted(): AnonymousResourceCollection
     {
         return OrderResource::collection(
-            $this->repository->getCompleted()
+            $this->repository->paginateCompleted()
         );
     }
 }

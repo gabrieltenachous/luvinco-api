@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderRepository
 {
@@ -21,12 +21,11 @@ class OrderRepository
             ->with('orderProducts')
             ->first();
     }
-    public function getCompleted(): Collection
+    public function paginateCompleted(): LengthAwarePaginator
     {
         return Order::with(['orderProducts.product'])
-            ->where('status', 'finalizado')
-            ->latest()
-            ->get();
+            ->where('status', 'finalizado') 
+            ->paginate(5);
     }
 
 
