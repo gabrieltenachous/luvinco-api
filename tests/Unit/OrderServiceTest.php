@@ -35,15 +35,14 @@ class OrderServiceTest extends TestCase
 
 
     #[Test]
-    public function should_fail_if_product_does_not_exist(): void
+    public function should_fail_if_quantity_is_less_than_minus_1(): void
     {
         $this->expectException(ValidationException::class);
 
         $this->service->createWithItems([
-            ['product_id' => 'non-existent', 'quantity' => 1]
+            ['product_id' => 'non-existent', 'quantity' => -2]
         ]);
     }
-
     #[Test]
     public function should_fail_if_stock_is_insufficient(): void
     {

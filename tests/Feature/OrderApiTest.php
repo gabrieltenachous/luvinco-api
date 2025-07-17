@@ -35,7 +35,7 @@ class OrderApiTest extends TestCase
     }
 
     #[Test]
-    public function should_fail_if_product_stock_is_insufficient()
+    public function should_fail_if_product_stock_is_insufficient(): void
     {
         $product = Product::factory()->create(['stock' => 1]);
 
@@ -48,7 +48,7 @@ class OrderApiTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors('items');
+            ->assertJsonValidationErrors('stock');
     }
 
     #[Test]
