@@ -35,7 +35,7 @@ DB_PASSWORD=root
 ### 3. Suba os containers
 
 ```bash
-docker compose up --build
+docker-compose up --build
 ```
 
 ### 4. Acesse o container Laravel
